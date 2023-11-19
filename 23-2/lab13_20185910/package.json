@@ -1,0 +1,7 @@
+{
+  "name": "lab13_20185910",
+  "version": "1.0.0",
+  "dependencies": {
+    "body-parser": "^1.20.2"
+  }
+}
