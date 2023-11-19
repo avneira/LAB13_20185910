@@ -1,10 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bicicentro</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
+<div class="container mt-5">
+    <!-- Imagen arriba -->
+    <div class="text-center">
+        <img src="logo.jpeg" class="img-fluid w-50" alt="Imagen">
+    </div>
+    <div class="text-center">
+        <h1> Bicicentro Gtics</h1>
+    </div>
+    <!-- Botones abajo -->
+    <div class="row mt-3">
+        <div class="col text-center">
+            <a href="home.html" class="btn btn-primary">Regresar</a>
+        </div>
+    </div>
+    <br>
+    <div class="text-center">
+        <h2> Lista de trabajadores</h2>
+    </div>
+    <div class="container mt-5">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Ver Detalles</th>
+            </tr>
+            </thead>
+            <tbody id="tabla">
+            </tbody>
+        </table>
+
+        <div id="detalles-sede">
+            <h2>Detalles de la Sede</h2>
+            <p><strong>ID </strong> <span id="detalle-id"></span></p>
+            <p><strong>Nombre </strong> <span id="detalle-nombre"></span></p>
+            <p><strong>Dirección </strong> <span id="detalle-direccion"></span></p>
+        </div>
+    </div>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                method: "GET",
+                dataType: "json",
+                url: "http://localhost:3000/trabajadores"
+            }).done(function (data) {
+                var contentHtml = "";
+                $.each(data, function (i, trabajador) {
+                    contentHtml += "<tr>";
+                    contentHtml += "<td>" + (i + 1) + "</td>";
+                    contentHtml += "<td>" + trabajador.nombres + "</td>";
+                    contentHtml += "<td>" + trabajador.correo + "</td>";
+                    contentHtml += "<td><button class='btn btn-primary' onclick='verDetalles(" + trabajador.dni + ")'>Ver Detalles</button></td>";
+
+                    contentHtml += "</tr>";
+                });
+                $("#tabla").html(contentHtml);
+            }).fail(function (err) {
+                console.log(err);
+                alert("Error al obtener la lista de trabajadores");
+            });
+        });
+        function verDetalles(id) {
+            $.ajax({
+                method: "GET",
+                dataType: "json",
+                url: "http://localhost:3000/trabajadores/" + id
+            }).done(function (detalles) {
+                $("#detalle-nombre").text(detalles[0].nombres);
+                $("#detalle-apellido").text(detalles[0].apellidos);
+                $("#detalle-correo").text(detalles[0].correo);
+                $("#detalle-dni").text(detalles[0].dni);
+                $("#detalle-sede").text(detalles[0].idsede);
+                $("#detalles-sede").show();
+            }).fail(function (err) {
+                console.log(err);
+                alert("Error");
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
